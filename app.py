@@ -1,18 +1,15 @@
 import streamlit as st
 from PIL import Image
-import os
 import fitz  # PyMuPDF
 import io
+import os
 
-# Titre de l'application
-st.title("Vérification du format vectoriel, raster ou PDF d'une image")
+st.title("Vérification du format vectoriel, raster ou PDF avec DPI")
 
-# Extensions acceptées
 vector_formats = ['.ai', '.svg', '.eps']
 raster_formats = ['.jpg', '.jpeg', '.png', '.tiff']
 pdf_format = ['.pdf']
 
-# Téléversement du fichier
 uploaded_file = st.file_uploader("Téléversez un fichier", type=vector_formats + raster_formats + pdf_format)
 
 if uploaded_file:
@@ -44,7 +41,6 @@ if uploaded_file:
 
     elif extension in pdf_format:
         try:
-            # Lire le fichier PDF en mémoire
             pdf_bytes = uploaded_file.read()
             doc = fitz.open(stream=pdf_bytes, filetype="pdf")
 
@@ -61,10 +57,34 @@ if uploaded_file:
             else:
                 st.warning("⚠️ Le PDF semble ne contenir que des images raster")
 
-            # Aperçu visuel de la première page
-            pix = page.get_pixmap()
-            img_data = Image.open(io.BytesIO(pix.tobytes("png")))
-            st.image(img_data, caption="Aperçu de la première page du PDF", use_column_width=True)
+            # Extraction des images raster et lecture des DPI
+            image_count = 0
+            for page_index in range(len(doc)):
+                page = doc.load_page(page_index)
+                images = page.get_images(full=True)
+
+                for img_index, img in enumerate(images):
+                    xref = img[0]
+                    base_image = doc.extract_image(xref)
+                    image_bytes = base_image["image"]
+                    image_ext = base_image["ext"]
+
+                    image = Image.open(io.BytesIO(image_bytes))
+                    dpi_info = image.info.get("dpi", None)
+
+                    image_count += 1
+                    st.image(image, caption=f"Image extraite page {page_index + 1}, image {img_index + 1}", use_column_width=True)
+                    st.write(f"**Format :** {image_ext}")
+                    st.write(f"**Dimensions :** {image.size[0]} x {image.size[1]} pixels")
+                    st.write(f"**DPI détecté :** {dpi_info if dpi_info else 'Non spécifié'}")
+
+                    if dpi_info and dpi_info[0] >= 150:
+                        st.success("✅ Le DPI est suffisant (≥ 150)")
+                    else:
+                        st.warning("⚠️ Le DPI est insuffisant ou non spécifié (< 150)")
+
+            if image_count == 0:
+                st.info("ℹ️ Aucun objet image raster trouvé dans ce fichier PDF.")
 
         except Exception as e:
             st.error(f"Erreur lors de l'analyse du PDF : {e}")
