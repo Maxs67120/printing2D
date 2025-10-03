@@ -25,6 +25,7 @@ if uploaded_file:
 
     if extension in vector_formats:
         st.success(f"✅ Le fichier est au format vectoriel ({extension})")
+        st.info("🖨️ Ce fichier vectoriel est adapté pour l'impression.")
 
     elif extension in raster_formats:
         try:
@@ -58,6 +59,7 @@ if uploaded_file:
 
             if vector_objects or text:
                 st.success("✅ Le PDF contient des éléments vectoriels")
+                st.info("🖨️ Ce fichier PDF est adapté pour l'impression.")
             else:
                 st.warning("⚠️ Le PDF semble ne contenir que des images raster")
 
