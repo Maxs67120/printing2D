@@ -1,5 +1,6 @@
 import streamlit as st
 from PIL import Image
+import pymupdf as fitz
 import os
 
 # Titre de l'application
