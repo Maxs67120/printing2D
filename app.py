@@ -1,7 +1,6 @@
 import streamlit as st
 from PIL import Image
 import os
-import fitz  # PyMuPDF
 
 st.title("Vérification du format vectoriel, raster ou PDF d'une image")
 
@@ -58,3 +57,5 @@ if uploaded_file:
             st.error(f"Erreur lors de l'analyse du PDF : {e}")
 
   
+else:
+    
