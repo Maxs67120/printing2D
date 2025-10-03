@@ -8,7 +8,7 @@ st.title("Vérification du format vectoriel ou du DPI d'une image")
 # Extensions vectorielles acceptées
 vector_formats = ['.ai', '.svg', '.eps']
 # Extensions raster acceptées
-raster_formats = ['.jpg', '.jpeg', '.png', '.tiff', '.pdf']
+raster_formats = ['.jpg', '.jpeg', '.png', '.tiff']
 
 # Téléversement du fichier
 uploaded_file = st.file_uploader("Téléversez un fichier", type=vector_formats + raster_formats)
