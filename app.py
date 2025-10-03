@@ -4,12 +4,15 @@ import fitz  # PyMuPDF
 import io
 import os
 
+# Titre de l'application
 st.title("Vérification du format vectoriel, raster ou PDF avec DPI")
 
+# Extensions acceptées
 vector_formats = ['.ai', '.svg', '.eps']
 raster_formats = ['.jpg', '.jpeg', '.png', '.tiff']
 pdf_format = ['.pdf']
 
+# Téléversement du fichier
 uploaded_file = st.file_uploader("Téléversez un fichier", type=vector_formats + raster_formats + pdf_format)
 
 if uploaded_file:
@@ -34,6 +37,7 @@ if uploaded_file:
 
             if dpi_info and dpi_info[0] >= 150:
                 st.success("✅ Le DPI est suffisant (≥ 150)")
+                st.info("🖨️ Ce fichier peut être utilisé pour l'impression.")
             else:
                 st.warning("⚠️ Le DPI est insuffisant ou non spécifié (< 150)")
         except Exception as e:
@@ -80,6 +84,7 @@ if uploaded_file:
 
                     if dpi_info and dpi_info[0] >= 150:
                         st.success("✅ Le DPI est suffisant (≥ 150)")
+                        st.info("🖨️ Cette image peut être utilisée pour l'impression.")
                     else:
                         st.warning("⚠️ Le DPI est insuffisant ou non spécifié (< 150)")
 
