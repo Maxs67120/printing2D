@@ -1,6 +1,6 @@
 import streamlit as st
 from PIL import Image
-import pymupdf as fitz
+import fitz  # PyMuPDF
 import os
 
 # Titre de l'application
@@ -16,7 +16,7 @@ uploaded_file = st.file_uploader("Téléversez un fichier", type=vector_formats 
 
 if uploaded_file:
     file_name = uploaded_file.name
-    _, extension = uploaded_file.path.splitext(file_name)
+    _, extension = os.path.splitext(file_name)
     extension = extension.lower()
 
     st.write(f"**Fichier téléversé :** {file_name}")
@@ -35,7 +35,7 @@ if uploaded_file:
             width_in = page.rect.width / 72
             height_in = page.rect.height / 72
 
-            # Obtenir les dimensions en pixels
+            # Obtenir les dimensions en pixels via rendu
             pix = page.get_pixmap(dpi=300)
             width_px = pix.width
             height_px = pix.height
