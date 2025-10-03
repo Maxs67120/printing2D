@@ -1,13 +1,18 @@
 import streamlit as st
 from PIL import Image
 import os
+import fitz  # PyMuPDF
+import io
 
+# Titre de l'application
 st.title("Vérification du format vectoriel, raster ou PDF d'une image")
 
+# Extensions acceptées
 vector_formats = ['.ai', '.svg', '.eps']
 raster_formats = ['.jpg', '.jpeg', '.png', '.tiff']
 pdf_format = ['.pdf']
 
+# Téléversement du fichier
 uploaded_file = st.file_uploader("Téléversez un fichier", type=vector_formats + raster_formats + pdf_format)
 
 if uploaded_file:
@@ -39,7 +44,10 @@ if uploaded_file:
 
     elif extension in pdf_format:
         try:
-            doc = fitz.open(stream=uploaded_file.read(), filetype="pdf")
+            # Lire le fichier PDF en mémoire
+            pdf_bytes = uploaded_file.read()
+            doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+
             page = doc.load_page(0)
             text = page.get_text()
             vector_objects = page.get_drawings()
@@ -53,7 +61,13 @@ if uploaded_file:
             else:
                 st.warning("⚠️ Le PDF semble ne contenir que des images raster")
 
+            # Aperçu visuel de la première page
+            pix = page.get_pixmap()
+            img_data = Image.open(io.BytesIO(pix.tobytes("png")))
+            st.image(img_data, caption="Aperçu de la première page du PDF", use_column_width=True)
+
         except Exception as e:
             st.error(f"Erreur lors de l'analyse du PDF : {e}")
 
-  
+    else:
+        st.error("❌ Format de fichier non pris en charge")
