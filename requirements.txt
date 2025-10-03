@@ -1,1 +1,1 @@
-pip install streamlit Pillow PyMuP
+pip install streamlit Pillow
