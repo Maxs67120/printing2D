@@ -1,6 +1,6 @@
 import streamlit as st
 from PIL import Image
-import pymupdf as fitz
+import fitz # fonctionne avec PyMuPDF
 import os
 
 # Titre de l'application
