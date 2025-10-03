@@ -1,20 +1,17 @@
 import streamlit as st
 from PIL import Image
 import os
+import fitz  # PyMuPDF
 
-# Titre de l'application
-st.title("Vérification du format vectoriel ou du DPI d'une image")
+st.title("Vérification du format vectoriel, raster ou PDF d'une image")
 
-# Extensions vectorielles acceptées
 vector_formats = ['.ai', '.svg', '.eps']
-# Extensions raster acceptées
 raster_formats = ['.jpg', '.jpeg', '.png', '.tiff']
+pdf_format = ['.pdf']
 
-# Téléversement du fichier
-uploaded_file = st.file_uploader("Téléversez un fichier", type=vector_formats + raster_formats)
+uploaded_file = st.file_uploader("Téléversez un fichier", type=vector_formats + raster_formats + pdf_format)
 
 if uploaded_file:
-    # Extraire l'extension du fichier
     file_name = uploaded_file.name
     _, extension = os.path.splitext(file_name)
     extension = extension.lower()
@@ -24,6 +21,7 @@ if uploaded_file:
 
     if extension in vector_formats:
         st.success(f"✅ Le fichier est au format vectoriel ({extension})")
+
     elif extension in raster_formats:
         try:
             img = Image.open(uploaded_file)
@@ -39,5 +37,24 @@ if uploaded_file:
                 st.warning("⚠️ Le DPI est insuffisant ou non spécifié (< 150)")
         except Exception as e:
             st.error(f"Erreur lors de l'ouverture de l'image : {e}")
+
+    elif extension in pdf_format:
+        try:
+            doc = fitz.open(stream=uploaded_file.read(), filetype="pdf")
+            page = doc.load_page(0)
+            text = page.get_text()
+            vector_objects = page.get_drawings()
+
+            st.write(f"**Nombre de pages :** {len(doc)}")
+            st.write(f"**Texte détecté :** {'Oui' if text else 'Non'}")
+            st.write(f"**Objets vectoriels détectés :** {'Oui' if vector_objects else 'Non'}")
+
+            if vector_objects or text:
+                st.success("✅ Le PDF contient des éléments vectoriels")
+            else:
+                st.warning("⚠️ Le PDF semble ne contenir que des images raster")
+
+        except Exception as e:
+            st.error(f"Erreur lors de l'analyse du PDF : {e}")
+
     else:
-        st.error("❌ Format de fichier non pris en charge")
