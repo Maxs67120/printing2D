@@ -5,7 +5,7 @@ import io
 import os
 
 # Titre de l'application
-st.title("Vérification du format vectoriel, raster ou PDF avec DPI")
+st.title("Vérification du format d'image pour l'impression 2D")
 
 # Extensions acceptées
 vector_formats = ['.ai', '.svg', '.eps']
