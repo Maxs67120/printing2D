@@ -3,17 +3,18 @@ from PIL import Image
 import os
 
 # Titre de l'application
-st.title("Vérification du format vectoriel ou du DPI d'un fichier image")
+st.title("Vérification du format vectoriel ou du DPI d'une image")
 
 # Extensions vectorielles acceptées
 vector_formats = ['.ai', '.svg', '.eps']
-# Extensions raster acceptées (incluant PDF)
-raster_formats = ['.jpg', '.jpeg', '.png', '.tiff', '.pdf']
+# Extensions raster acceptées
+raster_formats = ['.jpg', '.jpeg', '.png', '.tiff']
 
 # Téléversement du fichier
 uploaded_file = st.file_uploader("Téléversez un fichier", type=vector_formats + raster_formats)
 
 if uploaded_file:
+    # Extraire l'extension du fichier
     file_name = uploaded_file.name
     _, extension = os.path.splitext(file_name)
     extension = extension.lower()
@@ -23,43 +24,13 @@ if uploaded_file:
 
     if extension in vector_formats:
         st.success(f"✅ Le fichier est au format vectoriel ({extension})")
-
-    elif extension == '.pdf':
-        try:
-            pdf_bytes = uploaded_file.read()
-            pdf_doc = uploaded_file.open(stream=pdf_bytes, filetype="pdf")
-            page = pdf_doc[0]
-
-            # Obtenir les dimensions en pouces
-            width_in = page.rect.width / 72
-            height_in = page.rect.height / 72
-
-            # Obtenir les dimensions en pixels via rendu
-            pix = page.get_pixmap(dpi=300)
-            width_px = pix.width
-            height_px = pix.height
-
-            # Calcul du DPI
-            dpi_x = round(width_px / width_in)
-            dpi_y = round(height_px / height_in)
-
-            st.write(f"**Dimensions de la première page :** {width_px} x {height_px} pixels")
-            st.write(f"**DPI estimé :** ({dpi_x}, {dpi_y})")
-
-            if dpi_x >= 150 and dpi_y >= 150:
-                st.success("✅ Le DPI est suffisant (≥ 150)")
-            else:
-                st.warning("⚠️ Le DPI est insuffisant (< 150)")
-        except Exception as e:
-            st.error(f"Erreur lors de l'analyse du PDF : {e}")
-
     elif extension in raster_formats:
         try:
-            image = Image.open(uploaded_file)
-            dpi_info = image.info.get("dpi", None)
+            img = Image.open(uploaded_file)
+            dpi_info = img.info.get("dpi", None)
 
-            st.image(image, caption="Aperçu de l'image", use_column_width=True)
-            st.write(f"**Dimensions :** {image.size[0]} x {image.size[1]} pixels")
+            st.image(img, caption="Aperçu de l'image", use_column_width=True)
+            st.write(f"**Dimensions :** {img.size[0]} x {img.size[1]} pixels")
             st.write(f"**DPI détecté :** {dpi_info if dpi_info else 'Non spécifié'}")
 
             if dpi_info and dpi_info[0] >= 150:
@@ -68,6 +39,5 @@ if uploaded_file:
                 st.warning("⚠️ Le DPI est insuffisant ou non spécifié (< 150)")
         except Exception as e:
             st.error(f"Erreur lors de l'ouverture de l'image : {e}")
-
     else:
         st.error("❌ Format de fichier non pris en charge")
