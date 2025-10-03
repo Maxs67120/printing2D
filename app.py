@@ -15,7 +15,7 @@ uploaded_file = st.file_uploader("Téléversez un fichier", type=vector_formats 
 
 if uploaded_file:
     file_name = uploaded_file.name
-    _, extension = os.path.splitext(file_name)
+    _, extension = uploaded_file.path.splitext(file_name)
     extension = extension.lower()
 
     st.write(f"**Fichier téléversé :** {file_name}")
