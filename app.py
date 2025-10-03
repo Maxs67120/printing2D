@@ -57,5 +57,3 @@ if uploaded_file:
             st.error(f"Erreur lors de l'analyse du PDF : {e}")
 
   
-else:
-    
