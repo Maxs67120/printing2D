@@ -1,6 +1,5 @@
 import streamlit as st
 from PIL import Image
-import fitz # fonctionne avec PyMuPDF
 import os
 
 # Titre de l'application
@@ -28,7 +27,7 @@ if uploaded_file:
     elif extension == '.pdf':
         try:
             pdf_bytes = uploaded_file.read()
-            pdf_doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+            pdf_doc = uploaded_file.open(stream=pdf_bytes, filetype="pdf")
             page = pdf_doc[0]
 
             # Obtenir les dimensions en pouces
