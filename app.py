@@ -8,7 +8,10 @@ vector_extensions = ['.ai', '.svg', '.eps']
 st.title("LPS - Check printing file")
 
 # 📁 Upload du fichier
-uploaded_file = st.file_uploader("Choisissez un fichier", type=["svg", "ai", "eps", "png", "jpg", "jpeg"])
+uploaded_file = st.file_uploader(
+    "Choisissez un fichier",
+    type=["svg", "ai", "eps", "png", "jpg", "jpeg", "tiff"]
+)
 
 if uploaded_file:
     file_name = uploaded_file.name
