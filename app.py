@@ -2,10 +2,6 @@ import streamlit as st
 from PIL import Image
 import os
 
-# Load and display logo
-logo = Image.open("logo.png")  # Assure-toi que le fichier existe
-st.image(logo, width=150)
-
 # List of accepted vector file extensions
 vector_extensions = ['.ai', '.svg', '.eps']
 
