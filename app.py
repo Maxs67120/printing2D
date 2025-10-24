@@ -3,7 +3,7 @@ import streamlit as st
 import os
 
 # Load and display logo from assets folder
-logo = Image.open("assets/logo.png")
+logo = Image.open("logo.png")
 st.image(logo, width=150)
 
 # List of accepted vector file extensions
