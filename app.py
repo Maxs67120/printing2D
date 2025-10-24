@@ -5,7 +5,7 @@ import os
 # Liste des extensions vectorielles acceptées
 vector_extensions = ['.ai', '.svg', '.eps']
 
-st.title("Analyse de fichier graphique")
+st.title("LPS - Check printing file")
 
 # 📁 Upload du fichier
 uploaded_file = st.file_uploader("Choisissez un fichier", type=["svg", "ai", "eps", "png", "jpg", "jpeg"])
